@@ -1,0 +1,4 @@
+packages:
+  - local: _vendor/dbt-utils
+    name: dbt_utils
+sha1_hash: 8dc169bea5c6ed634047f2b3dbe4f6d183b814e1
