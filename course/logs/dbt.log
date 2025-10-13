@@ -27,3 +27,42 @@ Happy modeling!
 [0m10:10:25.808473 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10da674d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10dacb950>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10d719e50>]}
 [0m10:10:25.808924 [debug] [MainThread]: Flushing usage events
 [0m10:10:26.211471 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m10:21:28.023518 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10d29f650>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10d23ef10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10d2a4e90>]}
+
+
+============================== 10:21:28.025670 | 71877d71-a460-414e-a3c4-943a5336643e ==============================
+[0m10:21:28.025670 [info ] [MainThread]: Running with dbt=1.11.0-b3
+[0m10:21:28.025904 [debug] [MainThread]: running dbt with arguments {'cache_selected_only': 'False', 'log_format': 'default', 'version_check': 'True', 'indirect_selection': 'eager', 'fail_fast': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'static_parser': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'send_anonymous_usage_stats': 'True', 'no_print': 'None', 'invocation_command': 'dbt debug', 'write_json': 'True', 'profiles_dir': '/Users/U1097655/.dbt', 'use_experimental_parser': 'False', 'log_path': 'logs', 'debug': 'False', 'quiet': 'False', 'printer_width': '80', 'use_colors': 'True', 'target_path': 'None', 'empty': 'None'}
+[0m10:21:28.032877 [info ] [MainThread]: dbt version: 1.11.0-b3
+[0m10:21:28.033031 [info ] [MainThread]: python version: 3.11.14
+[0m10:21:28.033153 [info ] [MainThread]: python path: /Users/U1097655/Documents/Sanofi/iLearn/DBT/Snowflake/course/venv/bin/python
+[0m10:21:28.033262 [info ] [MainThread]: os info: macOS-26.0.1-arm64-arm-64bit
+[0m10:21:28.033378 [info ] [MainThread]: Using profiles dir at /Users/U1097655/.dbt
+[0m10:21:28.033493 [info ] [MainThread]: Using profiles.yml file at /Users/U1097655/.dbt/profiles.yml
+[0m10:21:28.033588 [info ] [MainThread]: Using dbt_project.yml file at /Users/U1097655/Documents/Sanofi/iLearn/DBT/Snowflake/course/dbt_project.yml
+[0m10:21:28.033694 [info ] [MainThread]: Configuration:
+[0m10:21:28.033786 [info ] [MainThread]:   profiles.yml file [[31mERROR not found[0m]
+[0m10:21:28.033877 [info ] [MainThread]:   dbt_project.yml file [[31mERROR not found[0m]
+[0m10:21:28.033967 [info ] [MainThread]: Required dependencies:
+[0m10:21:28.034093 [debug] [MainThread]: Executing "git --help"
+[0m10:21:28.044354 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\n           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\n           [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone      Clone a repository into a new directory\n   init       Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add        Add file contents to the index\n   mv         Move or rename a file, a directory, or a symlink\n   restore    Restore working tree files\n   rm         Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect     Use binary search to find the commit that introduced a bug\n   diff       Show changes between commits, commit and working tree, etc\n   grep       Print lines matching a pattern\n   log        Show commit logs\n   show       Show various types of objects\n   status     Show the working tree status\n\ngrow, mark and tweak your common history\n   backfill   Download missing objects in a partial clone\n   branch     List, create, or delete branches\n   commit     Record changes to the repository\n   merge      Join two or more development histories together\n   rebase     Reapply commits on top of another base tip\n   reset      Reset current HEAD to the specified state\n   switch     Switch branches\n   tag        Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch      Download objects and refs from another repository\n   pull       Fetch from and integrate with another repository or a local branch\n   push       Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m10:21:28.044679 [debug] [MainThread]: STDERR: "b''"
+[0m10:21:28.044794 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m10:21:28.044914 [info ] [MainThread]: Connection test skipped since no profile was found
+[0m10:21:28.045089 [info ] [MainThread]: [31m2 checks failed:[0m
+[0m10:21:28.045202 [info ] [MainThread]: dbt looked for a profiles.yml file in /Users/U1097655/.dbt/profiles.yml, but did
+not find one. For more information on configuring your profile, consult the
+documentation:
+
+https://docs.getdbt.com/docs/configure-your-profile
+
+
+[0m10:21:28.045316 [info ] [MainThread]: Project loading failed for the following reason:
+ project path </Users/U1097655/Documents/Sanofi/iLearn/DBT/Snowflake/course/dbt_project.yml> not found
+
+[0m10:21:28.047015 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 0.051785335, "process_in_blocks": "0", "process_kernel_time": 0.102699, "process_mem_max_rss": "112033792", "process_out_blocks": "0", "process_user_time": 0.46292}
+[0m10:21:28.047259 [debug] [MainThread]: Command `dbt debug` failed at 10:21:28.047211 after 0.05 seconds
+[0m10:21:28.047458 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10d23b190>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10d2dbb10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1091039d0>]}
+[0m10:21:28.047936 [debug] [MainThread]: Flushing usage events
+[0m10:21:28.550856 [debug] [MainThread]: An error was encountered while trying to flush usage events
