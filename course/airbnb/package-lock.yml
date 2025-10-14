@@ -1,4 +1,8 @@
 packages:
   - local: _vendor/dbt-utils
     name: dbt_utils
-sha1_hash: 8dc169bea5c6ed634047f2b3dbe4f6d183b814e1
+  - local: _vendor/dbt-date
+    name: dbt_date
+  - local: _vendor/dbt-expectations
+    name: dbt_expectations
+sha1_hash: 3bb14b9e39c90f71ecd66cadbf9e6930172766d4
