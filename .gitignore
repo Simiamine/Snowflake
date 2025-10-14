@@ -1,3 +1,4 @@
 preset-instructions.md
 profiles.yml
 course/airbnb/_vendor/dbt-utils
+.DS_Store
