@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: avg_price_by_room_type
+    columns:
+      - name: avg_price
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 10000

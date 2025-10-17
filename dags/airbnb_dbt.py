@@ -39,9 +39,18 @@ with DAG(
         bash_command=f"set -euo pipefail; dbt build --project-dir {DBT_PROJECT_DIR} --profiles-dir {DBT_PROFILES_DIR} --target {DBT_TARGET}",
     )
 
+    dbt_test_playground = BashOperator(
+        task_id="dbt_test_playground",
+        bash_command=(
+            f"set -euo pipefail; "
+            f"dbt test --select avg_price_by_room_type "
+            f"--project-dir {DBT_PROJECT_DIR} --profiles-dir {DBT_PROFILES_DIR} --target {DBT_TARGET}"
+        ),
+    )
+
     dbt_docs = BashOperator(
         task_id="dbt_docs_generate",
         bash_command=f"set -euo pipefail; dbt docs generate --project-dir {DBT_PROJECT_DIR} --profiles-dir {DBT_PROFILES_DIR} --target {DBT_TARGET}",
     )
 
-    dbt_deps >> dbt_seed >> dbt_freshness >> dbt_build >> dbt_docs
+    dbt_deps >> dbt_seed >> dbt_freshness >> dbt_build >> dbt_test_playground >> dbt_docs
