@@ -1,0 +1,59 @@
+# NOTE: clé 'version:' supprimée (obsolète)
+
+x-airflow-common: &airflow-common
+  image: airflow-dbt:latest
+  environment:
+    AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+    AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+    AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "True"
+    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: "True"
+    AIRFLOW__CORE__DEFAULT_TIMEZONE: "Europe/Paris"
+    _AIRFLOW_WWW_USER_USERNAME: admin
+    _AIRFLOW_WWW_USER_PASSWORD: admin
+    AIRFLOW_UID: "50000"
+  volumes:
+    # DAGS
+    - ../dags:/opt/airflow/dags
+    # Monte tout le repo pour accéder au projet dbt
+    - ..:/opt/airflow/repo
+    # Persistance logs & plugins
+    - airflow_logs:/opt/airflow/logs
+    - airflow_plugins:/opt/airflow/plugins
+    # Persistance de la base SQLite (CRUCIAL)
+    - ./airflow.db:/opt/airflow/airflow.db
+  user: "50000:0"
+
+services:
+  airflow-init:
+    <<: *airflow-common
+    command: >
+      bash -lc "
+      airflow db migrate &&
+      airflow users create
+        --username admin
+        --firstname Admin
+        --lastname User
+        --role Admin
+        --email admin@example.com
+        --password admin || true
+      "
+    # Pas besoin de ports, c'est une tâche one-shot
+
+  webserver:
+    <<: *airflow-common
+    command: webserver
+    ports: ["8081:8080"]  # UI sur 8081
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+
+  scheduler:
+    <<: *airflow-common
+    command: scheduler
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+
+volumes:
+  airflow_logs:
+  airflow_plugins:

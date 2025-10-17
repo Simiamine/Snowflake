@@ -1,0 +1,14 @@
+airbnb:
+  target: prod
+  outputs:
+    prod:
+      type: snowflake
+      account: {{ conn.extra_dejson.get('account') or conn.host }}
+      user: {{ conn.login }}
+      password: {{ conn.password }}
+      role: {{ conn.extra_dejson.get('role', 'TRANSFORMER') }}
+      database: {{ conn.extra_dejson.get('database', 'ANALYTICS') }}
+      warehouse: {{ conn.extra_dejson.get('warehouse', 'WH_XS') }}
+      schema: {{ conn.schema or 'AIRBNB' }}
+      threads: 8
+      client_session_keep_alive: false
