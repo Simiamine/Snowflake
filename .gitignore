@@ -81,3 +81,7 @@ course/airbnb/target/
 course/airbnb/logs/
 course/airbnb/dbt_packages/
 course/my_dbt_dagster_project/.tmp_dagster_home_*/
+
+*.env
+*.p8
+*.crt

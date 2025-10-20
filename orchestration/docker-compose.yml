@@ -54,6 +54,27 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
+  streamlit:
+    build: ./streamlit
+    image: airbnb-streamlit:latest
+    ports:
+      - "8501:8501"
+    env_file:
+      - ./streamlit.env
+    volumes:
+      - ./streamlit:/app:ro
+      - ./secrets/snowflake_rsa.p8:/run/secrets/snowflake_rsa.p8:ro
+      # Si tu dois faire reconnaître un CA d'entreprise, décommente la ligne suivante
+      - ./sanofi-bundle.crt:/usr/local/share/ca-certificates/sanofi-bundle.crt:ro
+    # Si tu as monté un CA custom ci-dessus, ajoute ce bloc pour l'installer:
+    command: >
+      bash -lc '
+        if [ -f /usr/local/share/ca-certificates/sanofi-bundle.crt ]; then
+          update-ca-certificates || true;
+        fi;
+        exec streamlit run app.py --server.port=8501 --server.address=0.0.0.0
+      '
+
 volumes:
   airflow_logs:
   airflow_plugins:

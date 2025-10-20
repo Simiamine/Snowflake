@@ -1,0 +1,6 @@
+streamlit
+pandas
+altair
+snowflake-connector-python
+cryptography
+python-dotenv
