@@ -55,7 +55,7 @@ def get_conn():
 def run_df(sql: str, params: dict | None = None) -> pd.DataFrame:
     with get_conn() as con:
         df = pd.read_sql(sql, con, params=params)
-    # Normaliser les noms de colonnes en minuscules (Snowflake renvoie souvent en MAJ)
+    # Snowflake renvoie souvent en MAJ → on met en minuscules
     df.columns = [c.lower() for c in df.columns]
     return df
 
@@ -75,8 +75,7 @@ st.caption(f"Contexte : `{SF_DATABASE}.{SF_SCHEMA}`  •  Rôle : `{SF_ROLE}`  �
 
 with st.sidebar:
     st.markdown("### Filtres globaux")
-    # Exemple de filtre: année min pour reviews (optionnel)
-    # year_min = st.number_input("Année min (reviews)", min_value=2008, max_value=2030, value=2008, step=1)
+    # (exemple futur)
 
 tab1, tab2, tab3 = st.tabs(["💶 Prix par type", "🏨 Listings + hosts", "🌕 Pleine lune"])
 
@@ -93,7 +92,6 @@ with tab1:
     df = run_df(sql_prices)
     ensure_columns(df, {"room_type", "avg_price", "n"}, "prix par type")
 
-    # Typage
     df["avg_price"] = pd.to_numeric(df["avg_price"], errors="coerce")
     df["n"] = pd.to_numeric(df["n"], errors="coerce")
 
@@ -131,41 +129,102 @@ with tab2:
     dfh["listings"] = pd.to_numeric(dfh["listings"], errors="coerce")
     st.dataframe(dfh, use_container_width=True)
 
-# ---------- Tab 3 : Pleine lune ----------
+# ---------- Tab 3 : Pleine lune – distribution des sentiments ----------
 with tab3:
-    st.subheader("Reviews les jours de pleine lune")
+    st.subheader("Distribution des sentiments selon la pleine lune")
 
-    sql_fullmoon = f"""
-        SELECT r.review_date::date AS day, COUNT(*) AS reviews
-        FROM {SF_DATABASE}.{SF_SCHEMA}.fct_reviews r
-        JOIN {SF_DATABASE}.{SF_SCHEMA}.mart_fullmoon_reviews m
-          ON r.review_date::date = m.review_date::date
-        GROUP BY day
-        ORDER BY day
+    sql_moon = f"""
+        WITH counts AS (
+            SELECT
+                LOWER(TRIM(is_full_moon))      AS moon_flag,
+                LOWER(TRIM(review_sentiment))   AS review_sentiment,
+                COUNT(*)                        AS n
+            FROM {SF_DATABASE}.{SF_SCHEMA}.mart_fullmoon_reviews
+            WHERE review_sentiment IS NOT NULL
+            GROUP BY 1,2
+        ),
+        totals AS (
+            SELECT moon_flag, SUM(n) AS total
+            FROM counts
+            GROUP BY 1
+        )
+        SELECT
+            c.moon_flag,
+            c.review_sentiment,
+            c.n,
+            t.total,
+            c.n / NULLIF(t.total,0)::float AS pct
+        FROM counts c
+        JOIN totals t USING (moon_flag)
+        ORDER BY c.moon_flag, c.review_sentiment;
     """
-    dfm = run_df(sql_fullmoon)
-    ensure_columns(dfm, {"day", "reviews"}, "pleine lune")
 
-    dfm["reviews"] = pd.to_numeric(dfm["reviews"], errors="coerce")
-    # Aperçu & ligne
-    st.dataframe(dfm.head(20), use_container_width=True)
+    dfm = run_df(sql_moon)
+    ensure_columns(dfm, {"moon_flag", "review_sentiment", "n", "total", "pct"}, "full moon sentiments")
 
-    # Streamlit line_chart attend un index temporel si on lui donne une série
-    try:
-        dfm_idx = dfm.set_index("day").sort_index()
-        st.line_chart(dfm_idx["reviews"])
-    except Exception:
-        # fallback Altair si besoin
-        line = (
+    # Typage
+    dfm["n"] = pd.to_numeric(dfm["n"], errors="coerce")
+    dfm["total"] = pd.to_numeric(dfm["total"], errors="coerce")
+    dfm["pct"] = pd.to_numeric(dfm["pct"], errors="coerce")
+
+    col_l, col_r = st.columns([1, 2], gap="large")
+
+    # ----- Tableau de proportions -----
+    with col_l:
+        st.markdown("**Proportion des sentiments (%)**")
+        st.dataframe(
+            dfm.assign(pct=lambda d: (d["pct"] * 100).round(2))
+               .pivot(index="review_sentiment", columns="moon_flag", values="pct")
+               .fillna(0.0)
+               .sort_index(),
+            use_container_width=True,
+        )
+        st.caption("Proportion par sentiment au sein de chaque groupe (Full / Not full).")
+
+    # ----- Graphique empilé -----
+    with col_r:
+        st.markdown("**Répartition 100 % empilée**")
+        chart_moon = (
             alt.Chart(dfm)
-            .mark_line(point=True)
+            .mark_bar()
             .encode(
-                x=alt.X("day:T", title="Jour"),
-                y=alt.Y("reviews:Q", title="Nb reviews"),
-                tooltip=[alt.Tooltip("day:T", title="Jour"), alt.Tooltip("reviews:Q", title="Reviews")],
+                x=alt.X("moon_flag:N", title="Phase de lune"),
+                y=alt.Y("pct:Q", title="Proportion", axis=alt.Axis(format="%")),
+                color=alt.Color("review_sentiment:N", title="Sentiment"),
+                tooltip=[
+                    alt.Tooltip("moon_flag:N", title="Phase"),
+                    alt.Tooltip("review_sentiment:N", title="Sentiment"),
+                    alt.Tooltip("n:Q", title="Compteur", format=",.0f"),
+                    alt.Tooltip("pct:Q", title="Proportion", format=".1%"),
+                ],
             )
         )
-        st.altair_chart(line, use_container_width=True)
+        st.altair_chart(chart_moon, use_container_width=True)
+
+    # ----- Test de proportion pour avis positifs -----
+    import math
+
+    pivot = dfm.pivot(index="review_sentiment", columns="moon_flag", values="n").fillna(0)
+    n_pos_full  = pivot.loc["positive", "full moon"]     if "positive" in pivot.index and "full moon" in pivot.columns else 0
+    n_tot_full  = dfm.loc[dfm["moon_flag"] == "full moon", "n"].sum()
+    n_pos_not   = pivot.loc["positive", "not full moon"] if "positive" in pivot.index and "not full moon" in pivot.columns else 0
+    n_tot_not   = dfm.loc[dfm["moon_flag"] == "not full moon", "n"].sum()
+
+    if n_tot_full > 0 and n_tot_not > 0:
+        p1 = n_pos_full / n_tot_full
+        p2 = n_pos_not / n_tot_not
+        p  = (n_pos_full + n_pos_not) / (n_tot_full + n_tot_not)
+        se = math.sqrt(p * (1 - p) * (1/n_tot_full + 1/n_tot_not))
+        z  = (p1 - p2) / se if se > 0 else float("nan")
+
+        st.markdown("### Comparaison du taux d’avis positifs")
+        col_a, col_b, col_c = st.columns(3)
+        col_a.metric("Full moon – % positifs", f"{p1*100:.2f}%")
+        col_b.metric("Not full moon – % positifs", f"{p2*100:.2f}%")
+        col_c.metric("Z-score (diff proportions)", f"{z:.2f}")
+        st.caption("Règle : |z| > 1.96 ≈ différence significative à 5 % (approximation large).")
+    else:
+        st.info("Impossible de calculer le test : effectifs insuffisants.")
 
 # ---------- Footer ----------
 st.caption("Données créées par dbt, stockées dans Snowflake, visualisées avec Streamlit ✨")
