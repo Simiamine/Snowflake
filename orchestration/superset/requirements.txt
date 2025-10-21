@@ -1,0 +1,2 @@
+# Drivers Snowflake maintenant installés dans le Dockerfile
+# Ce fichier est gardé pour d'éventuels futurs packages supplémentaires

@@ -76,6 +76,21 @@ test_results/
 *.key
 *.p12
 
+# --- Docker et Superset ---
+# Fichiers de configuration sensibles
+orchestration/.env
+orchestration/.env.*
+# Cache Superset et données utilisateur
+orchestration/superset/superset-home/.cache/
+orchestration/superset/superset-home/.python_history
+orchestration/superset/superset-home/app.db
+orchestration/superset/superset-home/superset.db
+# Base de données Airflow
+orchestration/airflow.db
+orchestration/airflow.db-*
+# Logs Docker
+orchestration/logs/
+
 # --- Autres spécifiques au projet dbt ---
 course/airbnb/target/
 course/airbnb/logs/

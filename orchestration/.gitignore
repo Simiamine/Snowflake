@@ -1,0 +1,28 @@
+# --- Fichiers de configuration sensibles ---
+.env
+.env.*
+*.env
+
+# --- Cache et données Superset ---
+superset/superset-home/.cache/
+superset/superset-home/.python_history
+superset/superset-home/app.db
+superset/superset-home/superset.db
+superset/superset-home/*.db
+
+# --- Base de données Airflow ---
+airflow.db
+airflow.db-*
+
+# --- Logs ---
+logs/
+*.log
+
+# --- Certificats ---
+*.crt
+*.pem
+*.key
+*.p12
+
+# --- Fichiers temporaires Docker ---
+.dockerignore.tmp

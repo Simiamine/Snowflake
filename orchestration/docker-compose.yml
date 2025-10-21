@@ -54,6 +54,30 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
+  superset:
+    build:
+      context: ./superset
+    container_name: airbnb_dbt-superset-1
+    ports:
+      - "8089:8088"
+    env_file:
+      - .env
+    environment:
+      # change cette clé (n'importe quelle string longue)
+      SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY}
+      # Variables Snowflake
+      SNOWFLAKE_USER: ${SF_USER}
+      SNOWFLAKE_PASSWORD: ${SF_PASSWORD}
+      SNOWFLAKE_ACCOUNT: ${SF_ACCOUNT}
+      SNOWFLAKE_DATABASE: ${SF_DATABASE}
+      SNOWFLAKE_WAREHOUSE: ${SF_WAREHOUSE}
+      SNOWFLAKE_ROLE: ${SF_ROLE}
+    volumes:
+      - ./superset/superset-home:/app/superset_home
+    depends_on:
+      - webserver   # pas obligatoire, juste pour l'ordre
+
+
   streamlit:
     build: ./streamlit
     image: airbnb-streamlit:latest
