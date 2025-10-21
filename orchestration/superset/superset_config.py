@@ -7,37 +7,39 @@ ENABLE_TEMPLATE_PROCESSING = True
 # 1) Couleurs par libellé (doivent matcher EXACTEMENT les valeurs dans tes séries)
 LABEL_COLORS = {
     # Sentiment Analysis
-    "negative": "#E74C3C",        # rouge
-    "neutral":  "#95A5A6",        # gris
-    "positive": "#27AE60",        # vert
+    "negative": "#E74C3C",        # rouge vif
+    "neutral":  "#95A5A6",        # gris neutre
+    "positive": "#27AE60",        # vert (positif)
+    
     # Full Moon Analysis
-    "full moon": " #9B59B6",      # violet
-    "not full moon": "#2980B9",   # bleu
-    # Room Types Airbnb
-    "Entire home/apt": "#E67E22", # orange
-    "Hotel room": "#F39C12",      # jaune/orange
-    "Private room": "#3498DB",    # bleu clair
-    "Shared room": "#1ABC9C",     # turquoise
+    "full moon": "#9B59B6",       # violet (mystique)
+    "not full moon": "#2980B9",   # bleu (clair de lune)
+    
+    # Room Types Airbnb (palette identitaire + contraste)
+    "Entire home/apt": "#FF385C",  # rouge Airbnb (Rausch)
+    "Hotel room":      "#FC642D",  # orange “hospitality”
+    "Private room":    "#00A699",  # teal (Babu)
+    "Shared room":     "#00D1C1",  # aqua (contrasté)
 }
 
-# 2) Ta palette personnalisée
+# 2) Palette personnalisée Airbnb
 EXTRA_CATEGORICAL_COLOR_SCHEMES = [
     {
         "id": "airbnb_theme",
         "label": "Airbnb Theme",
         "colors": [
-            "#27AE60",  # vert (positive)
-            "#95A5A6",  # gris (neutral)  
-            "#E74C3C",  # rouge (negative)
-            "#2980B9",  # bleu (not full moon)
-            "#9B59B6",  # violet (full moon)
-            "#E67E22",  # orange (Entire home/apt)
-            "#F39C12",  # jaune/orange (Hotel room)
-            "#3498DB",  # bleu clair (Private room)
-            "#1ABC9C",  # turquoise (Shared room)
+            "#FF385C",  # Airbnb Red / Entire home/apt
+            "#FC642D",  # Hospitality Orange / Hotel room
+            "#00A699",  # Teal / Private room
+            "#00D1C1",  # Aqua / Shared room
+            "#27AE60",  # Vert / Positive
+            "#95A5A6",  # Gris / Neutral
+            "#E74C3C",  # Rouge vif / Negative
+            "#2980B9",  # Bleu / Not full moon
+            "#9B59B6",  # Violet / Full moon
         ],
     }
 ]
 
-# 3) La définir comme palette par défaut dans l’UI
+# 3) Définir la palette comme défaut dans l’UI
 DEFAULT_CATEGORICAL_COLOR_SCHEME = "airbnb_theme"
